@@ -103,4 +103,65 @@ class Setting extends Model implements HasMedia
 
         return $query->get();
     }
+
+    public static function normalizeMediaUrl(?string $value, ?string $baseUrl = null): ?string
+    {
+        if (blank($value)) {
+            return $value;
+        }
+
+        $request = app()->bound('request') ? app('request') : null;
+        $requestRoot = $request ? rtrim((string) $request->getSchemeAndHttpHost(), '/') : null;
+        $baseUrl = rtrim((string) ($baseUrl ?? config('app.url') ?? $requestRoot), '/');
+
+        if ($requestRoot && $requestRoot !== $baseUrl) {
+            $baseUrl = $requestRoot;
+        }
+
+        if ($baseUrl === '' || ! preg_match('#^https?://#i', $value)) {
+            return $value;
+        }
+
+        $parts = parse_url($value);
+
+        if (! is_array($parts) || empty($parts['path'])) {
+            return $value;
+        }
+
+        $normalized = $baseUrl.$parts['path'];
+
+        if (! empty($parts['query'])) {
+            $normalized .= '?'.$parts['query'];
+        }
+
+        if (! empty($parts['fragment'])) {
+            $normalized .= '#'.$parts['fragment'];
+        }
+
+        return $normalized;
+    }
+
+    public static function normalizeMediaFields(array $fields, ?string $baseUrl = null): array
+    {
+        foreach ($fields as $key => $value) {
+            $fields[$key] = self::normalizeMediaFieldValue($value, $baseUrl);
+        }
+
+        return $fields;
+    }
+
+    protected static function normalizeMediaFieldValue(mixed $value, ?string $baseUrl = null): mixed
+    {
+        if (is_string($value)) {
+            return self::normalizeMediaUrl($value, $baseUrl);
+        }
+
+        if (is_array($value)) {
+            foreach ($value as $index => $item) {
+                $value[$index] = self::normalizeMediaFieldValue($item, $baseUrl);
+            }
+        }
+
+        return $value;
+    }
 }

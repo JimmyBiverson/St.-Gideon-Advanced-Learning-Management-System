@@ -12,6 +12,7 @@ import {
    School,
    Settings,
    Users,
+   Video,
 } from 'lucide-react';
 import { pluginEnabled } from '@/lib/plugin';
 import { routeLastSegment } from '@/lib/route';
@@ -218,6 +219,20 @@ const getDashboardRoutes = (page: SharedData): DashboardRoute[] => {
                      ],
                   },
                ],
+            },
+            {
+               Icon: Video,
+               name: button.live_class || 'Live Class',
+               path: liveClass.index.url(),
+               slug: routeLastSegment(liveClass.index.url()),
+               active: true,
+               access: [
+                  'admin',
+                  'instructor',
+                  'collaborative',
+                  'administrative',
+               ],
+               children: [],
             },
             {
                Icon: FilePenLine,
@@ -505,12 +520,6 @@ const getDashboardRoutes = (page: SharedData): DashboardRoute[] => {
                      name: button.auth || 'Auth',
                      slug: routeLastSegment(auth0.index.url()),
                      path: auth0.index.url(),
-                     access: ['admin', 'collaborative', 'administrative'],
-                  },
-                  {
-                     name: button.live_class || 'Live Class',
-                     slug: routeLastSegment(liveClass.index.url()),
-                     path: liveClass.index.url(),
                      access: ['admin', 'collaborative', 'administrative'],
                   },
                   {

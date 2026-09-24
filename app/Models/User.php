@@ -65,6 +65,35 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'status' => 'integer',
     ];
 
+    public function getAttribute($key)
+    {
+        $value = parent::getAttribute($key);
+
+        if (is_string($value)) {
+            return Setting::normalizeMediaUrl($value, $this->currentBaseUrl());
+        }
+
+        return $value;
+    }
+
+    public function toArray(): array
+    {
+        $attributes = parent::toArray();
+
+        if (isset($attributes['photo'])) {
+            $attributes['photo'] = Setting::normalizeMediaUrl($attributes['photo'], $this->currentBaseUrl());
+        }
+
+        return $attributes;
+    }
+
+    protected function currentBaseUrl(): ?string
+    {
+        $request = app()->bound('request') ? app('request') : null;
+
+        return $request ? $request->getSchemeAndHttpHost() : config('app.url');
+    }
+
     public function instructor(): BelongsTo
     {
         return $this->belongsTo(Instructor::class);

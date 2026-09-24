@@ -7,6 +7,7 @@ import { dashboard, logout } from '@/routes';
 import student from '@/routes/student';
 
 interface TabListsProps {
+   onNavigate?: () => void;
    tabs: {
       id: string;
       name: string;
@@ -17,13 +18,13 @@ interface TabListsProps {
    }[];
 }
 
-const TabLists = ({ tabs }: TabListsProps) => {
+const TabLists = ({ tabs, onNavigate }: TabListsProps) => {
    const { props } = usePage<StudentDashboardProps>();
    const { auth, system, instructor, translate } = props;
    const { button, common } = translate;
 
    return (
-      <div className="w-[230px]">
+      <div className="w-full min-w-0">
          <div className="mb-6 flex flex-col items-center">
             <div className="h-[120px] w-[120px] overflow-hidden rounded-full">
                <img
@@ -42,7 +43,10 @@ const TabLists = ({ tabs }: TabListsProps) => {
             <Button
                variant="ghost"
                className="mb-2 h-10 w-full justify-start gap-3 rounded-lg px-5 py-3 text-start"
-               onClick={() => router.get(dashboard())}
+               onClick={() => {
+                  onNavigate?.();
+                  router.get(dashboard());
+               }}
             >
                <LayoutDashboard className="h-4 w-4" />
                <span>{common.dashboard}</span>
@@ -55,7 +59,10 @@ const TabLists = ({ tabs }: TabListsProps) => {
                   key={id}
                   value={slug}
                   className="relative flex h-10 cursor-pointer items-center justify-start gap-3 rounded-lg px-4 text-start font-normal text-sidebar-accent-foreground/80 hover:bg-muted hover:text-sidebar-accent-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:hover:bg-primary/15"
-                  onClick={() => router.get(student.index({ tab: slug }))}
+                  onClick={() => {
+                     onNavigate?.();
+                     router.get(student.index({ tab: slug }));
+                  }}
                >
                   <Icon className="h-4 w-4" />
                   <span>{name}</span>
@@ -65,7 +72,10 @@ const TabLists = ({ tabs }: TabListsProps) => {
             <Button
                variant="ghost"
                className="h-10 w-full justify-start gap-3 !px-4 font-normal text-sidebar-accent-foreground/80 hover:bg-red-100 hover:text-red-500"
-               onClick={() => router.post(logout())}
+               onClick={() => {
+                  onNavigate?.();
+                  router.post(logout());
+               }}
             >
                <LogOut className="h-4 w-4" />
                <span>{button.logout}</span>
@@ -77,13 +87,14 @@ const TabLists = ({ tabs }: TabListsProps) => {
             <Button
                variant="outline"
                className="mt-6 w-full"
-               onClick={() =>
+               onClick={() => {
+                  onNavigate?.();
                   router.get(
                      student.index({
                         tab: 'instructor',
                      }),
-                  )
-               }
+                  );
+               }}
             >
                {button.become_instructor}
             </Button>

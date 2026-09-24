@@ -58,7 +58,7 @@ const TopInstructors = () => {
                                     className="h-full w-full object-cover object-center"
                                     src={
                                        instructor.user.photo ||
-                                       '/assets/images/intro/default/instructors/instructor-1.png'
+                                       '/assets/avatars/avatar-1.png'
                                     }
                                     alt=""
                                  />

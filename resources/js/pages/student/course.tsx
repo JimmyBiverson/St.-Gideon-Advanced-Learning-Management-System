@@ -24,7 +24,7 @@ const Course = (props: StudentCourseProps) => {
       },
       {
          value: 'live_classes',
-         label: 'Live Classes',
+         label: 'Live classes',
       },
       {
          value: 'assignments',

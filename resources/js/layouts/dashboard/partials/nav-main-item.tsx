@@ -22,11 +22,17 @@ interface NavMainItemProps {
 const NavMainItem = (props: NavMainItemProps) => {
    const page = usePage<SharedData>();
    const { auth, direction, frontend } = page.props;
-   const { state } = useSidebar();
+   const { isMobile, setOpenMobile, state } = useSidebar();
 
    const { pageRoute } = props;
    const { Icon, name, path, children, slug } = pageRoute;
    const compact = state === 'collapsed';
+
+   const closeMobileSidebar = () => {
+      if (isMobile) {
+         setOpenMobile(false);
+      }
+   };
 
    const activeAccordion = (slug: string) => {
       const urlPath =
@@ -126,7 +132,7 @@ const NavMainItem = (props: NavMainItemProps) => {
                                        : 'text-foreground hover:bg-muted',
                                  )}
                               >
-                                 <Link href={path} prefetch>
+                                 <Link href={path} onClick={closeMobileSidebar} prefetch>
                                     <span className="capitalize">
                                        {childName}
                                     </span>
@@ -143,6 +149,7 @@ const NavMainItem = (props: NavMainItemProps) => {
          return (
             <Link
                href={path}
+               onClick={closeMobileSidebar}
                prefetch
                className={cn(
                   compactBase,
@@ -211,7 +218,7 @@ const NavMainItem = (props: NavMainItemProps) => {
                            )}
                            className="h-9 pl-3"
                         >
-                           <Link href={path} prefetch>
+                           <Link href={path} onClick={closeMobileSidebar} prefetch>
                               <span className="text-sm font-normal capitalize">
                                  {childName}
                               </span>
@@ -234,7 +241,7 @@ const NavMainItem = (props: NavMainItemProps) => {
                : '',
          )}
       >
-         <Link href={path} prefetch>
+         <Link href={path} onClick={closeMobileSidebar} prefetch>
             <Icon className="h-4 w-4" />
             <span>{name}</span>
          </Link>

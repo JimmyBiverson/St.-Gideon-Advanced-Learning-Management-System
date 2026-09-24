@@ -13,10 +13,61 @@ class PageData
      */
     public static function getAllPages(): array
     {
-        return [
+        return self::schoolify([
             ...self::getHomePages(),
             ...self::getInnerPages(),
-        ];
+        ]);
+    }
+
+    private static function schoolify(array $pages): array
+    {
+        array_walk_recursive($pages, function (&$value): void {
+            if (! is_string($value)) {
+                return;
+            }
+
+            $value = str_replace(
+                [
+                    'Mentor LMS',
+                    'Mentor',
+                    'info@example.com',
+                    'support@uilib.com',
+                    'partnerships@example.com',
+                    'careers@example.com',
+                    'feedback@example.com',
+                    '123 Education Street Learning City, LC 12345 United States',
+                    '68k+',
+                    '32k+',
+                    '45k+',
+                    '1.2k+',
+                    '5,500+',
+                    '400+',
+                    '+2000 readers worldwide',
+                    'Trusted by over 100 leading companies worldwide',
+                ],
+                [
+                    'St. Gideon Learning Management System',
+                    'St. Gideon',
+                    'bamjimmybiverson18@gmail.com',
+                    'bamjimmybiverson18@gmail.com',
+                    'bamjimmybiverson18@gmail.com',
+                    'bamjimmybiverson18@gmail.com',
+                    'bamjimmybiverson18@gmail.com',
+                    'Namugongo, Kampala, Uganda',
+                    '100+',
+                    '300+',
+                    '40k+',
+                    '100+',
+                    '100+',
+                    '300+',
+                    '300+ students at St. Gideon',
+                    'Quality learning for students in Uganda and beyond',
+                ],
+                $value,
+            );
+        });
+
+        return $pages;
     }
 
     /**

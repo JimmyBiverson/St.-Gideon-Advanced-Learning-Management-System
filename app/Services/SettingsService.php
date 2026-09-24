@@ -68,6 +68,12 @@ class SettingsService extends MediaService
                 $data['auth_banner'] = $this->addNewDeletePrev($setting, $data['new_auth_banner'], 'auth_banner');
             }
 
+            foreach (['logo_dark', 'logo_light', 'favicon', 'banner', 'auth_banner'] as $field) {
+                if (array_key_exists($field, $data) && is_string($data[$field])) {
+                    $data[$field] = Setting::normalizeMediaUrl($data[$field], url('/'));
+                }
+            }
+
             // Remove multiple fields at once
             $filteredData = Arr::except($data, [
                 'new_logo_dark',
@@ -76,6 +82,8 @@ class SettingsService extends MediaService
                 'new_banner',
                 'new_auth_banner',
             ]);
+
+            $filteredData = Setting::normalizeMediaFields($filteredData, url('/'));
 
             $setting->update(['fields' => $filteredData]);
 

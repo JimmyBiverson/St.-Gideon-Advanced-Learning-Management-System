@@ -18,7 +18,17 @@ class SmtpConfig
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $smtp = $this->settingsService->getSetting(['type' => 'smtp'])['fields'];
+        $smtpSetting = $this->settingsService->getSetting(['type' => 'smtp']);
+        $smtp = array_merge([
+            'mail_mailer' => config('mail.default'),
+            'mail_host' => '',
+            'mail_port' => 465,
+            'mail_encryption' => 'ssl',
+            'mail_username' => '',
+            'mail_password' => '',
+            'mail_from_name' => config('app.name'),
+            'mail_from_address' => config('mail.from.address'),
+        ], $smtpSetting['fields'] ?? []);
 
         // SMTP configuration
         config([

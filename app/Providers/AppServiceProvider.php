@@ -21,7 +21,15 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('system', function (): ?Setting {
             try {
                 if (isDBConnected() && Schema::hasTable('settings')) {
-                    return Setting::where('type', 'system')->first();
+                    $setting = Setting::where('type', 'system')->first();
+
+                    if ($setting && is_array($setting->fields)) {
+                        $request = app()->bound('request') ? app('request') : null;
+                        $baseUrl = $request?->getSchemeAndHttpHost() ?: config('app.url');
+                        $setting->fields = Setting::normalizeMediaFields($setting->fields, $baseUrl);
+                    }
+
+                    return $setting;
                 }
 
                 return null;
@@ -64,12 +72,12 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         // Fix for shared hosting missing CURL_SSLVERSION_TLSv1_2 constant
-        if (!defined('CURL_SSLVERSION_TLSv1_2')) {
+        if (! defined('CURL_SSLVERSION_TLSv1_2')) {
             define('CURL_SSLVERSION_TLSv1_2', 6); // 6 = TLSv1.2
         }
 
         ResetPassword::createUrlUsing(function (User $user, string $token) {
-            return env('FRONTEND_URL') . '/reset-password?token=' . $token . '&email=' . $user->email;
+            return env('FRONTEND_URL').'/reset-password?token='.$token.'&email='.$user->email;
         });
 
         // Force HTTPS scheme for URLs when accessed via HTTPS

@@ -121,17 +121,23 @@ const Layout = ({ children, tab }: { children: ReactNode; tab: string }) => {
                         {screen < 768 && (
                            <Sheet open={open} onOpenChange={setOpen}>
                               <SheetTrigger asChild>
-                                 <Button size="icon" variant="outline">
+                                 <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="mb-4 gap-2"
+                                    aria-label="Open student menu"
+                                 >
                                     <ListFilter className="h-5 w-5" />
+                                    <span>Student menu</span>
                                  </Button>
                               </SheetTrigger>
 
                               <SheetContent
                                  side="left"
-                                 className="w-[230px] overflow-hidden border-border p-0"
+                                 className="w-[min(18rem,calc(100vw-1rem))] max-w-[18rem] overflow-hidden border-border p-3"
                               >
                                  <ScrollArea className="h-full w-full">
-                                    <TabLists tabs={tabs} />
+                                    <TabLists tabs={tabs} onNavigate={() => setOpen(false)} />
                                  </ScrollArea>
                               </SheetContent>
                            </Sheet>

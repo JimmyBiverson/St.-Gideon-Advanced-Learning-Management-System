@@ -164,7 +164,7 @@ class InstructorService extends MediaService
                 'status' => 'pending',
             ]);
 
-            User::admins()->each->notify($notification);
+            User::admins()->get()->each->notify($notification);
         } else {
             $instructor->update(['status' => 'approved']);
         }

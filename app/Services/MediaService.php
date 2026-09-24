@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Setting;
 use Illuminate\Database\Eloquent\Model;
 
 class MediaService extends BaseService
@@ -35,7 +36,7 @@ class MediaService extends BaseService
                 ->toMediaCollection();
         }
 
-        return $newMedia->getFullUrl();
+        return Setting::normalizeMediaUrl($newMedia->getFullUrl(), url('/'));
     }
 
     public function addSingleFile(Model $model, $image, ?string $name)
@@ -51,6 +52,6 @@ class MediaService extends BaseService
                 ->toMediaCollection();
         }
 
-        return $newMedia->getFullUrl();
+        return Setting::normalizeMediaUrl($newMedia->getFullUrl(), url('/'));
     }
 }

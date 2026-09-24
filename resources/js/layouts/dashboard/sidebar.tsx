@@ -13,9 +13,9 @@ import { NavMain } from '@/layouts/dashboard/partials/nav-main';
 import { cn } from '@/lib/utils';
 
 const DashboardSidebar = () => {
-   const { state } = useSidebar();
+   const { isMobile, state } = useSidebar();
    const { props } = usePage<SharedData>();
-   const compact = state === 'collapsed';
+   const compact = !isMobile && state === 'collapsed';
 
    return (
       <Sidebar

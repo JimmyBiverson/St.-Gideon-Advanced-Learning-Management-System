@@ -51,9 +51,9 @@ class FooterSeeder extends Seeder
                 'slug' => 'address',
                 'title' => 'Address',
                 'items' => [
-                    ['title' => 'Corner view Subudbazar, Sylhet, Bangladesh.'],
-                    ['title' => 'Email: uilib@gmail.com'],
-                    ['title' => 'Phone: +880 1123 456 780'],
+                    ['title' => 'Namugongo, Kampala, Uganda'],
+                    ['title' => 'Email: bamjimmybiverson18@gmail.com'],
+                    ['title' => 'Phone: +256 7563 71377'],
                 ],
             ],
             [
@@ -81,7 +81,7 @@ class FooterSeeder extends Seeder
             [
                 'type' => 'copyright',
                 'slug' => 'copyright',
-                'title' => '© Copyright 2025 UI Lib, All rights reserved.',
+                'title' => '© Copyright 2026 St. Gideon Learning Management System, All rights reserved.',
                 'items' => [],
             ],
         ];

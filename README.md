@@ -6,6 +6,82 @@ Mentor LMS is a comprehensive Learning Management System built with Laravel 13 a
 
 Mentor LMS offers a robust platform for creating, managing, and selling online courses with features like curriculum building, payment processing, student enrollment management, live classes, job postings, and advanced analytics. The system supports multiple user roles, course formats, payment gateways, and includes modular architecture for easy maintenance and updates.
 
+## St. Gideon Operations Guide
+
+This installation is customized for **St. Gideon Learning Management System** in Namugongo, Kampala, Uganda. The public platform is intended for students, instructors, and administrators. The source defaults include the school's public contact details and page content; production database content should be updated from the admin panel after creating a backup.
+
+### System Requirements
+
+- PHP 8.3 or newer with BCMath, cURL, DOM, Fileinfo, JSON, Mbstring, OpenSSL, PCRE, PDO, Tokenizer, XML, and `symlink()` enabled.
+- MySQL or another database supported by Laravel 13.
+- Node.js and npm for compiling the React/Inertia frontend.
+- SMTP credentials for verification, password reset, notifications, and enrollment email.
+- Zoom Server-to-Server OAuth credentials for live classes.
+
+### Local Setup
+
+```powershell
+composer install
+Copy-Item .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+npm install
+npm run build
+php artisan storage:link
+php artisan serve
+```
+
+Set the database, application URL, mail, storage, and payment values in `.env` before running migrations. Never commit `.env`, production credentials, `logins.txt`, `cookies.txt`, or deployment archives.
+
+For active frontend development, use `npm run dev` instead of `npm run build`. The application uses Vite, React 19, Inertia 3, Tailwind CSS 4, and Laravel Wayfinder for typed route helpers.
+
+### User Roles
+
+- **Administrator**: Configure branding, pages, navigation, storage, SMTP, payments, Zoom, languages, plugins, users, courses, exams, payouts, certificates, reports, backups, and maintenance.
+- **Instructor**: Create and manage permitted courses and exams, build curriculum, schedule live classes, review students, answer forums, monitor revenue, and request payouts. Marketplace instructors require admin approval.
+- **Student**: Browse and enroll in courses or exams, study lessons, join live classes, submit assignments, take quizzes and exams, track progress, use forums and wishlist, review completed courses, and download certificates or marksheets.
+
+### Main Workflows
+
+1. **Configure the platform**: Admin dashboard -> Settings -> System. Set the St. Gideon name, title, description, email, phone, currency, theme, logos, favicon, and banner.
+2. **Configure email**: Settings -> SMTP. Email is required for registration verification, password reset, notifications, and transactional messages.
+3. **Configure live classes**: Settings -> Live Class Settings. Add Zoom Server-to-Server OAuth credentials with `meeting:write`, `meeting:read`, and `user:read` scopes.
+4. **Configure payments**: Settings -> Payment Gateways. Enable only gateways with valid credentials. Use sandbox/test mode during verification.
+5. **Create learning content**: Courses -> Categories, then Courses -> Create Course. Add sections, lessons, media, quizzes, resources, assignments, pricing, enrollment rules, and optional drip content.
+6. **Schedule classes**: Open a course's Live Class section, create the session, verify its date and timezone, then test the host and student join paths.
+7. **Create exams**: Exams -> Categories, then Exams -> Create Exam. Add questions, timing, attempts, grading, pricing, and publication settings.
+8. **Publish public pages**: Settings -> Pages or Settings -> Frontend. Edit page content, SEO metadata, visibility, sections, images, and mobile/tablet previews before publishing.
+9. **Manage operations**: Use Users, enrollments, payment reports, instructor applications, payouts, blogs, certificates, marksheets, and notifications from the admin dashboard.
+
+### St. Gideon Content and Branding
+
+The source defaults are stored in [database/data/PageData.php](database/data/PageData.php), [database/seeders/SettingsSeeder.php](database/seeders/SettingsSeeder.php), and [database/seeders/FooterSeeder.php](database/seeders/FooterSeeder.php). The school assets are kept in `branding-assets/`. Existing production rows are not deleted automatically. Back up the database first, then apply the seeders or update the same values through Settings -> System, Settings -> Pages, and the frontend page builder.
+
+### Testing and Quality Checks
+
+```powershell
+php artisan test --compact tests/Unit/SchoolBrandingContentTest.php
+php artisan test --compact
+npm run types:check
+npm run lint:check
+npm run build
+vendor/bin/pint --dirty --format agent
+```
+
+Payment, SMTP, Google, and Zoom integrations must be tested with sandbox credentials. Do not use real payment keys in local development. Test every role with separate accounts and verify desktop, tablet, and mobile navigation before release.
+
+### Deployment and Maintenance
+
+1. Create a current database, asset, and source backup.
+2. Put the application into maintenance mode.
+3. Deploy the source and compiled assets, then run `php artisan migrate --force`.
+4. Run the relevant module migrations and seeders once.
+5. Clear and rebuild caches with `php artisan optimize:clear` and `php artisan optimize`.
+6. Run smoke tests for public pages, authentication, student enrollment, instructor course management, admin settings, payments, and live classes.
+7. Disable maintenance mode and monitor Laravel logs, queue workers, email delivery, and scheduled jobs.
+
+Never run destructive seeders against production without a backup. Do not commit credentials or user data to GitHub.
+
 ## Updated Version 5.3.0 - 16 July 2026
 
 - **New**: Added Facebook Meta Pixel integration with server-side Conversions API.
@@ -201,20 +277,15 @@ Mentor LMS offers a robust platform for creating, managing, and selling online c
 - **Fix**: Richtext editor content render issues from all components
 - **Fix**: Category select issue form exam create and update components
 - **Fix**: System currency symbol issue from exam card and dashboard cart components
-  <<<<<<< HEAD
 - # **Fix**: Top course section issue from home page of administrative landing page
 - **Fix**: 'Top course' section issue from home page of administrative landing page
-   > > > > > > > main
 - **Fix**: Intro page section edit modal issue from other pages intro page
 - **Fix**: Course or Exam enrollment duration duration period issue from the data table.
 - **Fix**: RTL issue from course and exam category pages of admin/instructor dashboard.
 - **Remove**: Previous Course or Exam enrollment duration period handing functionality
 - **Improve**: Added a list of course or exam enrollment duration period for create and update.
 - **Improve**: Course or Exam enrollment duration period handing functionality.
-  <<<<<<< HEAD
-  =======
 - **Improve**: Changed some routes access permission for the student role
-   > > > > > > > main
 
 ## Updated Version 3.2.0 - 30 November 2025
 
