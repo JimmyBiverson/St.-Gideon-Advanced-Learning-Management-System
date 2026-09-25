@@ -1,8 +1,8 @@
-import { router, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import type { LucideProps } from 'lucide-react';
 import { LayoutDashboard, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TabsList } from '@/components/ui/tabs';
 import { dashboard, logout } from '@/routes';
 import student from '@/routes/student';
 
@@ -19,7 +19,7 @@ interface TabListsProps {
 }
 
 const TabLists = ({ tabs, onNavigate }: TabListsProps) => {
-   const { props } = usePage<StudentDashboardProps>();
+   const { props, url } = usePage<StudentDashboardProps>();
    const { auth, system, instructor, translate } = props;
    const { button, common } = translate;
 
@@ -40,33 +40,27 @@ const TabLists = ({ tabs, onNavigate }: TabListsProps) => {
          </div>
 
          {instructor && instructor.status === 'approved' && (
-            <Button
-               variant="ghost"
-               className="mb-2 h-10 w-full justify-start gap-3 rounded-lg px-5 py-3 text-start"
-               onClick={() => {
-                  onNavigate?.();
-                  router.get(dashboard());
-               }}
+            <Link
+               href={dashboard()}
+               onClick={() => onNavigate?.()}
+               className="mb-2 flex h-10 w-full items-center justify-start gap-3 rounded-lg px-5 py-3 text-start hover:bg-muted"
             >
                <LayoutDashboard className="h-4 w-4" />
                <span>{common.dashboard}</span>
-            </Button>
+            </Link>
          )}
 
          <TabsList className="grid h-auto grid-cols-1 gap-2 bg-transparent p-0">
             {tabs.map(({ id, name, slug, Icon }) => (
-               <TabsTrigger
+               <Link
                   key={id}
-                  value={slug}
-                  className="relative flex h-10 cursor-pointer items-center justify-start gap-3 rounded-lg px-4 text-start font-normal text-sidebar-accent-foreground/80 hover:bg-muted hover:text-sidebar-accent-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:hover:bg-primary/15"
-                  onClick={() => {
-                     onNavigate?.();
-                     router.get(student.index({ tab: slug }));
-                  }}
+                  href={student.index({ tab: slug })}
+                  onClick={() => onNavigate?.()}
+                  className={`relative flex h-10 cursor-pointer items-center justify-start gap-3 rounded-lg px-4 text-start font-normal text-sidebar-accent-foreground/80 hover:bg-muted hover:text-sidebar-accent-foreground ${url.includes(`/student/${slug}`) ? 'bg-primary/10 text-primary hover:bg-primary/15' : ''}`}
                >
                   <Icon className="h-4 w-4" />
                   <span>{name}</span>
-               </TabsTrigger>
+               </Link>
             ))}
 
             <Button
@@ -84,20 +78,13 @@ const TabLists = ({ tabs, onNavigate }: TabListsProps) => {
 
          {((system.sub_type === 'collaborative' && !instructor) ||
             (instructor && instructor.status !== 'approved')) && (
-            <Button
-               variant="outline"
-               className="mt-6 w-full"
-               onClick={() => {
-                  onNavigate?.();
-                  router.get(
-                     student.index({
-                        tab: 'instructor',
-                     }),
-                  );
-               }}
+            <Link
+               href={student.index({ tab: 'instructor' })}
+               onClick={() => onNavigate?.()}
+               className="mt-6 flex h-10 w-full items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
             >
                {button.become_instructor}
-            </Button>
+            </Link>
          )}
       </div>
    );
