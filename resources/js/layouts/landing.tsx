@@ -1,4 +1,3 @@
-import { usePage } from '@inertiajs/react';
 import React from 'react';
 import GoogleAnalytics from '@/components/google-analytics';
 import MetaPixel from '@/components/meta-pixel';
@@ -9,12 +8,16 @@ import Navbar from './navbar';
 interface LayoutProps {
    children: React.ReactNode;
    language?: boolean;
+   page?: Page;
+   frontend?: Project | null;
 }
 
-const LandingLayout = ({ children, language = false }: LayoutProps) => {
-   const { props } = usePage<FrontendPageProps>();
-   const { page, frontend } = props;
-
+const LandingLayout = ({
+   children,
+   language = false,
+   page,
+   frontend,
+}: LayoutProps) => {
    const lastSegment =
       typeof window !== 'undefined'
          ? window.location.href.split('/').pop()
